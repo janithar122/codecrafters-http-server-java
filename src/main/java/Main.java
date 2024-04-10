@@ -7,21 +7,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Main {
-  public static void main(String[] args) {
-    
-    System.out.println("Logs from your program will appear here!");
-    
-     ServerSocket serverSocket = null;
-     Socket clientSocket = null;
-     String CRLF = "\r\n";
-    
-    try {
-      serverSocket = new ServerSocket(4221);
-       serverSocket.setReuseAddress(true);
-       clientSocket = serverSocket.accept();
-       System.out.println("accepted new connection");
 
-       InputStream inputStream = clientSocket.getInputStream();
+  final static String CRLF = "\r\n";
+
+  private static void handler(Socket clientSocket) throws IOException{
+    InputStream inputStream = clientSocket.getInputStream();
        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
        BufferedReader bufferredRead = new BufferedReader(inputStreamReader);
        String[] request = bufferredRead.readLine().split(" ");
@@ -45,6 +35,35 @@ public class Main {
         outputStream.write(("HTTP/1.1 200 OK" + CRLF + contentType + CRLF + contentLength + CRLF + CRLF + msg).getBytes());
        }else{
         outputStream.write("HTTP/1.1 404 Not Found\r\n\r\n".getBytes());
+       }
+       outputStream.flush();
+  }
+
+  public static void main(String[] args) {
+    
+    System.out.println("Logs from your program will appear here!");
+    
+     ServerSocket serverSocket = null;
+     //Socket clientSocket = null;
+     
+    
+    try {
+      serverSocket = new ServerSocket(4221);
+       serverSocket.setReuseAddress(true);
+       System.out.println("accepted new connection");
+       
+       while (true) {
+        Socket clientSocket = serverSocket.accept();
+        new Thread(new Runnable(){
+          @Override
+          public void run(){
+            try {
+              handler(clientSocket);
+            } catch (Exception e) {
+              System.out.println("IOException: " + e.getMessage());
+            }
+          }
+        });
        }
 
      } catch (IOException e) {
