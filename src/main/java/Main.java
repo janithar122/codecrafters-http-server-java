@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -11,10 +12,14 @@ public class Main {
      Socket clientSocket = null;
     
     try {
-       serverSocket = new ServerSocket(4221);
+      serverSocket = new ServerSocket(4221);
        serverSocket.setReuseAddress(true);
        clientSocket = serverSocket.accept();
        System.out.println("accepted new connection");
+
+       OutputStream outputStream = clientSocket.getOutputStream();
+       outputStream.write("HTTP/1.1 OK\r\n\r\n".getBytes());
+
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
      }
