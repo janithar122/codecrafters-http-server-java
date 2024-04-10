@@ -18,7 +18,7 @@ public class Main {
        System.out.println("accepted new connection");
 
        OutputStream outputStream = clientSocket.getOutputStream();
-       outputStream.write("HTTP/1.1 OK\r\n\r\n".getBytes());
+       outputStream.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
 
      } catch (IOException e) {
        System.out.println("IOException: " + e.getMessage());
