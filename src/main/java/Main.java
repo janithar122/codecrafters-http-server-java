@@ -13,6 +13,7 @@ public class Main {
     
      ServerSocket serverSocket = null;
      Socket clientSocket = null;
+     String CRLF = "\r\n";
     
     try {
       serverSocket = new ServerSocket(4221);
@@ -29,6 +30,12 @@ public class Main {
        OutputStream outputStream = clientSocket.getOutputStream();
        if (path.equals("/")) {
         outputStream.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
+       }else if(path.contains("/echo/")){
+        String msg = path.substring(6);
+        String contentType = "Content-Type: text/plain";
+        String contentLength = "Content-Length: " +msg.length();
+
+        outputStream.write(("HTTP/1.1 200 OK" + CRLF + contentType + CRLF + contentLength + CRLF + CRLF + msg).getBytes());
        }else{
         outputStream.write("HTTP/1.1 404 Not Found\r\n\r\n".getBytes());
        }
