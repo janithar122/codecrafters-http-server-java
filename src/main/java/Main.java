@@ -36,6 +36,13 @@ public class Main {
         String contentLength = "Content-Length: " +msg.length();
 
         outputStream.write(("HTTP/1.1 200 OK" + CRLF + contentType + CRLF + contentLength + CRLF + CRLF + msg).getBytes());
+       }else if(path.contains("/user-agent")){
+        bufferredRead.readLine();
+        String msg = bufferredRead.readLine().split("User-Agent: ")[1];
+        String contentType = "Content-Type: text/plain";
+        String contentLength = "Content-Length: " +msg.length();
+
+        outputStream.write(("HTTP/1.1 200 OK" + CRLF + contentType + CRLF + contentLength + CRLF + CRLF + msg).getBytes());
        }else{
         outputStream.write("HTTP/1.1 404 Not Found\r\n\r\n".getBytes());
        }
